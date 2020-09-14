@@ -1,0 +1,64 @@
+I made this git because self learners may start learning about machine learning with this awesome project in mind
+only to realize that they approached the subject wrong. Most people wont read this post and it will cost them hours,
+days and weeks as a result.
+
+TimeLine
+
+In order to become a competent machine learning practitioner you need to spend about 1000 hours. That 1000 hours doesn't
+even mean you will be good. But you will know enough to know your are dumb.
+
+That 1000 hours does not include math and coding skills. Here are two tests.
+
+ Can you tell me the 1st, second and third derivative of x^2? If not add 500 hours
+
+ Can you code in at least 3 languages? If not add 500 hours
+
+
+ Im not trying to discourage you. But there is a big difference between witting your own machine learning algorithms
+ and running neuralnetwork.solvemyproblem().inahurry(). If you skip a step below you will be sorry!!
+
+
+ Step 1) Math
+
+ To start out you need, at the very least a weak understanding of calculus and linear algebra. I recommend khan
+ academy.
+
+
+ Step 2) Basic proof of ability
+
+ Build your own machine learning framework from scratch and implement the bare bones needed. It should be simple
+ but it should allow you to solve the XOR problem. Do this using nothing but plain code, no libraries etc.
+ Dont get fancy. I started doing adding all kinds of stuff and wasted alot of time. use the tanh function and mse
+ and move on to dl4j.
+
+ https://ml-cheatsheet.readthedocs.io/en/latest/backpropagation.html   <- Your welcome
+
+
+ Step 3) Go through the exercises List
+
+ Each exercise is harder than the last and gives you the tools needed to move quickly in the future. These are exercises
+ that I did and often overdid. Once again, build a general knowledge of math and ml before venturing off
+
+
+
+ LAST AND MOST IMPORTANT I will tell you the mistakes you will make, before you make them, because although
+ you will make them at least you can write me a funny email saying "You were right! I made all those mistakes!"
+
+
+ 1) You think something you make in your first 1000 hours will do something useful. It will not. If you have a pet project
+ maybe try a small slice of it if possible but dont waste time. Do the road map first and come back to it. Newbs will try
+ complicated things, fail and waste time debugging. Start simple and solve simple problems and then iterate into harder
+ harder and harder problems as you learn
+
+ 2) Assuming you dont have bugs. You make something and the results aren't right. The common mistake is to try changing the NN
+hyper params. If you skipped steps 1 & 2 above your fucked TBH. Always assume your code is the issue and the network is working right
+especially if you following an example.
+
+3) No clear expectations of results or timing. While its hard to understand exactly what should happen when you run your code
+the worst thing you can do is to A) not know what the outcome should be and B) Not know how long it will take to get there. Then
+proceed to try random solutions. Instead, focus on toy cases with small experiment times. Run other people code or look at their charts
+iteration times to benchmark your expectations.
+
+
+
+
