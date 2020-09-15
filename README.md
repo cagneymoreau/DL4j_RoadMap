@@ -20,7 +20,7 @@ If you want to add something to this please dont hesitate to let me know.
 
 3) Feed Forward Linear Regression and minibatch
 
-4) MLP ClassifierLinear -Use the DL4J Example
+4) CXVClassifierLinear -Use the DL4J Example
 
 3) Feed Forward Logistic Regression and saving network
 
