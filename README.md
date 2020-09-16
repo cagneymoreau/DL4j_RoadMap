@@ -1,4 +1,4 @@
-Machine Learning RoadMap for DL4J
+#Machine Learning RoadMap for DL4J
 
 As a much younger man, around 9 months ago, I began to research the alchemy of machine learning.
 I bumped my head a few times along the way and to ease someone elses transition Im leaving this here.
@@ -6,39 +6,50 @@ Its a collection of progressively harder projects that I learned on and you can 
 When I set out to learn I didnt plan on writing this so its a very ugly collections. The only advantage It has
 over other learning sources is the chronological progression and my snappy comments!
 
-If you want to add something to this please dont hesitate to let me know.
+
+If you want to add something to this please don't hesitate to let me know.
+Somr of the more interesting things dont work so If you see an error that would be really cool
 
 
-
-1) BigPicture.txt (Also posted on my blog cagneymoreau.com/dl4j-roadmap
+### BigPicture.txt
     - math
     - hand coded net
 
-2) Download the DL4J examples and test some stuff out for fun
+### Download the DL4J examples and test some stuff out for fun
+https://github.com/eclipse/deeplearning4j-examples
 
-3) Working with INDarrays and datasets
+### Working with INDarrays and datasets
 
-3) Feed Forward Linear Regression and minibatch
+### Feed Forward Linear Regression and minibatch
 
-4) CXVClassifierLinear -Use the DL4J Example
+### CSVClassifierLinear
+not included I used the dl4j example repo
 
-3) Feed Forward Logistic Regression and saving network
+### Feed Forward Logistic Regression and saving network
 
-4) Debuging Basic - Pulling Weights and Gradients
+### Debuging Basic - Pulling Weights and Gradients
 
-4) Recurrent Regression
+### Recurrent Regression
 
-5) Dual LSTM and csv manipulation
+### Dual LSTM and csv manipulation
 
-6) OverFitting and BenchMarking against examples
+### OverFitting and BenchMarking against examples
 
-7) Early Stopping
+### Early Stopping
 
-9)Convolutions Cifar -Use the DL4J example
+### Convolutions Cifar
+not included I used the dl4j example repo
 
-8) autoencoder/unsupervised
+### autoencoder/unsupervised
 
-8) Custom loss function
+### convolution autoencoder
 
-9) Reinforcement learning and weight sharing
+### GrowAble Gan and weight sharing
+Ony makes modern art at the moment
+
+### Custom loss function
+
+### Reinforcement learning
+separate git
+https://github.com/cagneymoreau/ReinforcmentLearning
 
