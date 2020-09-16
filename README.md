@@ -1,14 +1,12 @@
 #Machine Learning RoadMap for DL4J
 
-As a much younger man, around 9 months ago, I began to research the alchemy of machine learning.
-I bumped my head a few times along the way and to ease someone elses transition Im leaving this here.
-Its a collection of progressively harder projects that I learned on and you can tackle. Some are missing flawed etc
+This is a collection of progressively harder projects that I learned on and you can review or fix. Some are missing flawed etc
 When I set out to learn I didnt plan on writing this so its a very ugly collections. The only advantage It has
 over other learning sources is the chronological progression and my snappy comments!
 
 
 If you want to add something to this please don't hesitate to let me know.
-Somr of the more interesting things dont work so If you see an error that would be really cool
+Some of the more interesting things don't work so If you see an error let me know
 
 
 ### BigPicture.txt
