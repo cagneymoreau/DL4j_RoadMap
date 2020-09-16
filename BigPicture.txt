@@ -1,4 +1,4 @@
-I made this git because self learners may start learning about machine learning with this awesome project in mind
+I made this text file because self learners may start learning about machine learning with this awesome project in mind
 only to realize that they approached the subject wrong. Most people wont read this post and it will cost them hours,
 days and weeks as a result.
 
@@ -17,6 +17,9 @@ That 1000 hours does not include math and coding skills. Here are two tests.
  Im not trying to discourage you. But there is a big difference between witting your own machine learning algorithms
  and running neuralnetwork.solvemyproblem().inahurry(). If you skip a step below you will be sorry!!
 
+ Its same to assume you are also reading some books to get a broad overview on the subject. Check out goodreads
+ as they have machie learning books with reviews. Also friend me if your into scifi books so i can see what your reading.
+
 
  Step 1) Math
 
@@ -34,7 +37,8 @@ That 1000 hours does not include math and coding skills. Here are two tests.
  https://ml-cheatsheet.readthedocs.io/en/latest/backpropagation.html   <- Your welcome
 
 
- Step 3) Go through the exercises List
+
+ Step 4) Go through the exercises List
 
  Each exercise is harder than the last and gives you the tools needed to move quickly in the future. These are exercises
  that I did and often overdid. Once again, build a general knowledge of math and ml before venturing off
