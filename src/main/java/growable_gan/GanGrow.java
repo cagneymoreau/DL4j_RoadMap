@@ -33,6 +33,8 @@ import java.util.Map;
 /**
  *
  * This is my first attempt. It runs but doesnt work
+ * It shows various debugging strategies for a reasonably coplicated
+ * computational graph so leave it as is
  *
  */
 
@@ -182,10 +184,18 @@ public class GanGrow {
 
         while(keepTrain){
 
+            /**
+             * Here are the debugging strategies for a comutational graph.
+             * The same with only slight difference
+             *
+             *
+             */
+
             Map<String, INDArray> outG = fullGanNet.feedForward (gaussianIterator.next(), 2, false);
             INDArray[] res = fullGanNet.output(gaussianIterator.next());
             fullGanNet.fit(gaussianIterator.next(), labelTrue);
             Gradient g = fullGanNet.gradient();
+            //System.out.println("Add debugging point here");
 
             int result = 0;
             if (res[0].getFloat(0) > .5f){

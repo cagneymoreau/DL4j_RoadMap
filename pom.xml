@@ -117,7 +117,14 @@
 
     <dependencies>
 
+        <!-- This causes UIServer to throw nosuchmethod exception -->
+        <!-- -->
 
+        <dependency>
+            <groupId>org.datavec</groupId>
+            <artifactId>datavec-local</artifactId>
+            <version>${datavec.version}</version>
+        </dependency>
 
 
         <dependency>
