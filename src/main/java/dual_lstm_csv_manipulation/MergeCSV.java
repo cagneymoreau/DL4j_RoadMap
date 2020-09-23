@@ -148,7 +148,7 @@ public class MergeCSV {
             }
 
             for (int i = 0; i < key.length; i++) {
-                if (!oppKey[i].equals(key[i].substring(0, key[i].length()-2))){
+                if (!oppKey[i].equals(key[i])){
                     match = false;
                     return match;
                 }

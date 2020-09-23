@@ -1,10 +1,17 @@
 package autoencoder_unsupervised;
 
+import org.apache.commons.io.IOUtils;
 import org.datavec.api.records.reader.impl.csv.CSVRecordReader;
 import org.datavec.api.split.FileSplit;
 import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator;
+import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
+import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
+import org.deeplearning4j.nn.conf.layers.DenseLayer;
+import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.transferlearning.TransferLearning;
+import org.deeplearning4j.nn.weights.WeightInit;
+import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.deeplearning4j.util.ModelSerializer;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -18,19 +25,39 @@ import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
 import org.nd4j.linalg.dataset.api.preprocessor.NormalizerMinMaxScaler;
+import org.nd4j.linalg.learning.config.Adam;
+import org.nd4j.linalg.lossfunctions.LossFunctions;
 
 import javax.swing.*;
 import java.io.File;
+import java.io.FileInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This is a dataset of a large portion of sp500 stocks
+ * each tick is the daily change in price as an absolute
+ * precentage of the previous days price value
+ *
+ *
+ */
+
+
 public class AutoEncoder {
 
+    private final static String path = "D:\\Dropbox\\Apps\\RoadMap\\src\\main\\java\\autoencoder_unsupervised\\";
 
-    void postStocksToLatentSpace()throws Exception
+    public static void main(String[] args)throws Exception
+    {
+        postStocksToLatentSpace();
+    }
+
+
+    static void postStocksToLatentSpace()throws Exception
     {
 
-        DataSetIterator iter = FormattedDataRequester.basicIterator(Constants.autoEncodePath + "auto.csv", 0, 1);
+        DataSetIterator iter = basicIterator(path + "auto.csv", 0, 1);
 
         DataSet datas = iter.next();
 
@@ -39,7 +66,7 @@ public class AutoEncoder {
         iter.setPreProcessor(normalization);
         //normalization.preProcess(datas);
 
-        MultiLayerNetwork network = Networks.getlittleEncoder(Activation.IDENTITY);
+        MultiLayerNetwork network = getlittleEncoder(Activation.IDENTITY);
 
 
         for (int i = 0; i < 1; i++) {
@@ -86,7 +113,7 @@ public class AutoEncoder {
         INDArray netP = network.getLayer(0).params();
 
 
-        ModelSerializer.writeModel(network, Constants.autoEncodePath + "model_ident.zip", true);
+        ModelSerializer.writeModel(network, path + "model_ident.zip", true);
 
         TransferLearning.Builder builder = new TransferLearning.Builder(network)
                 .removeLayersFromOutput(3);
@@ -114,7 +141,7 @@ public class AutoEncoder {
 
         }
 
-        plotScatterGraphPairs(output, Constants.autoEncodePath + "auto.csv", 0);
+        plotScatterGraphPairs(output, path + "auto.csv", 0);
 
     }
 
@@ -152,7 +179,7 @@ public class AutoEncoder {
 
         XYSeriesCollection dataset = new XYSeriesCollection();
 
-        List<String> names = FileManager.retreiveColumnFullCSV(path, colunmIndex);
+        List<String> names = retreiveColumnFullCSV(path, colunmIndex);
 
         int counter = 0;
         for (INDArray ind : DataSetList) {
@@ -189,6 +216,42 @@ public class AutoEncoder {
 
         f.setVisible(true);
     }
+
+
+    public static MultiLayerNetwork getlittleEncoder(Activation activation){
+
+        MultiLayerConfiguration config = new NeuralNetConfiguration.Builder()
+                .seed(123)
+                .weightInit(WeightInit.XAVIER)
+                .updater(new Adam(.1))
+                .list()
+                .layer(new DenseLayer.Builder().nIn(512).nOut(64).activation(activation).build())
+                .layer(new DenseLayer.Builder().nIn(64).nOut(16).activation(activation).build())
+                .layer(new DenseLayer.Builder().nIn(16).nOut(2).activation(activation).build())
+                .layer(new DenseLayer.Builder().nIn(2).nOut(16).activation(activation).build())
+                .layer(new DenseLayer.Builder().nIn(16).nOut(64).activation(activation).build())
+                .layer(new OutputLayer.Builder(LossFunctions.LossFunction.MSE).activation(activation).nIn(64).nOut(512).build())
+                .build();
+
+        MultiLayerNetwork net = new MultiLayerNetwork(config);
+        net.init();
+        net.setListeners(new ScoreIterationListener(100));
+
+        return net;
+    }
+
+
+    public static List<String> retreiveColumnFullCSV(String path, int column) throws Exception {
+
+        List<String> lines = IOUtils.readLines(new FileInputStream(path), StandardCharsets.UTF_8);
+
+        for (int i = 0; i < lines.size(); i++) {
+            lines.set(i, lines.get(i).split(",")[column]);
+        }
+
+        return lines;
+    }
+
 
 
 }

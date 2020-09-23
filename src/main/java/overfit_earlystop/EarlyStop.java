@@ -1,5 +1,6 @@
-package dual_lstm_csv_manipulation;
+package overfit_earlystop;
 
+import dual_lstm_csv_manipulation.MergeCSV;
 import org.apache.commons.io.IOUtils;
 import org.datavec.api.records.reader.RecordReader;
 import org.datavec.api.records.reader.SequenceRecordReader;
@@ -14,6 +15,16 @@ import org.datavec.local.transforms.misc.StringToWritablesFunction;
 import org.datavec.local.transforms.misc.WritablesToStringFunction;
 import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator;
 import org.deeplearning4j.datasets.datavec.SequenceRecordReaderDataSetIterator;
+import org.deeplearning4j.datasets.iterator.DataSetIteratorSplitter;
+import org.deeplearning4j.earlystopping.EarlyStoppingConfiguration;
+import org.deeplearning4j.earlystopping.EarlyStoppingResult;
+import org.deeplearning4j.earlystopping.saver.LocalFileModelSaver;
+import org.deeplearning4j.earlystopping.scorecalc.DataSetLossCalculator;
+import org.deeplearning4j.earlystopping.scorecalc.RegressionScoreCalculator;
+import org.deeplearning4j.earlystopping.termination.MaxEpochsTerminationCondition;
+import org.deeplearning4j.earlystopping.termination.MaxTimeIterationTerminationCondition;
+import org.deeplearning4j.earlystopping.termination.ScoreImprovementEpochTerminationCondition;
+import org.deeplearning4j.earlystopping.trainer.EarlyStoppingTrainer;
 import org.deeplearning4j.nn.conf.GradientNormalization;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
@@ -28,6 +39,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.nd4j.evaluation.regression.RegressionEvaluation;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
@@ -46,35 +58,26 @@ import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
- * I played around with stocks and built a really large stock trading
- * program. What I learned in that process is the price of the dollar
- * is the biggest factor in any stock price. Secondly that confounding
- * factors such as sentiment analysis are extremely important.
  *
- * Although Im not an expert, classical signal such as P/E are no longer as relevant
- *  in the time scale of using your money in this life and inputing this type of
- *  "basic data" will get you nowhere.
+ * Overfitting can be useful because eventually nn overfit should occur.
+ * But overfitting is not the goal. This code shows you
  *
- * Its still a cool example though. The first fits to the stock
+ * 1) splitting dataset on the hard drive. You can split datasets within your ram
+ * but its not always doable with any non trival dataset
  *
- * The second just shows combining csv with a custom script
- *
- * You will learn as data sets and complexity grow to save all your csv data
- * as you work and iterate through. Finding bugs in terabytes of data you will
- * not be able to store it all in memory
- *
- *
+ * 2) How to stop from fitting when you prediction are the best match to unseen data
  *
  *
  */
 
-public class LSTMCSV {
+public class EarlyStop {
 
     private enum deleteRow {none, first, last}
     public enum combination {simple, combo, tech, full}
-    public static String path = "D:\\Dropbox\\Apps\\RoadMap\\src\\main\\java\\dual_lstm_csv_manipulation\\";
+    public static String path = "D:\\Dropbox\\Apps\\RoadMap\\src\\main\\java\\overfit_earlystop\\";
 
 
     public static void main(String[] args) throws Exception
@@ -88,35 +91,11 @@ public class LSTMCSV {
         createSimpleDataSet(path + "mmm.csv", path + "simple_mmm.csv", deleteRow.last, false);
         createSeqSingleLabelDataSet(path + "mmm.csv", path + "label_mmm.csv", deleteRow.first);
 
-        LSTMCSV ll = new LSTMCSV();
+        EarlyStop ll = new EarlyStop();
         ll.trainandTestSimpleSingle();
 
 
 
-        /**
-         * This uses a custom class to merge two datasets
-         */
-
-        createSimpleDataSet(path + "goog.csv", path + "prep_goog.csv", deleteRow.last, true);
-        createSimpleDataSet(path + "mmm.csv", path + "prep_mmm.csv", deleteRow.last, true);
-
-
-        List<String> mmm = retreiveFullCSV(path + "prep_mmm.csv");
-        List<String> goog = retreiveFullCSV(path + "prep_goog.csv");
-
-        MergeCSV merge = new MergeCSV(new int[]{0,1,2}, new int[]{0,1,2}, true);
-
-        ArrayList<String> fin = merge.mergeFile((ArrayList<String>) mmm, (ArrayList<String>) goog);
-
-        //turn technical into writables
-        removeNonNumbers(fin);
-
-        rewriteFullCSV(path + "both.csv", fin);
-
-        DataSet d =  readCSVDataSet(path + "both.csv", 1500, -1);
-
-
-        plotFitCompare(d, null, (int) d.getLabels().length(), "combined");
 
 
 
@@ -129,61 +108,86 @@ public class LSTMCSV {
 
     private void trainandTestSimpleSingle()throws Exception
     {
+        List<String> list = retreiveFullCSV(path + "simple_mmm.csv");
+        List<String> label = retreiveFullCSV(path + "label_mmm.csv");
 
-        //ArrayList<String> stocks = DataUpdater.getStocks();
+        int trainLength = (int) Math.round(list.size() * .7);
+
+        rewriteFullCSV(path + "train_feat_mmm.csv", list.subList(0, trainLength));
+        rewriteFullCSV(path + "train_label_mmm.csv",  label.subList(0, trainLength));
+
+        rewriteFullCSV(path + "test_feat_mmm.csv", list.subList(trainLength, list.size()));
+        rewriteFullCSV(path + "test_label_mmm.csv", label.subList(trainLength, list.size()));
 
 
-        DataSetIterator iter = sequenceIterator(combination.simple,"simple_mmm", "label_mmm", 1);
-        DataSet dd = iter.next();
+        DataSetIterator trainIter = sequenceIterator("train_feat_mmm.csv",  "train_label_mmm.csv", 1);
+        DataSetIterator testIter = sequenceIterator("test_feat_mmm.csv",  "test_label_mmm.csv", 1);
 
-        ArrayList<DataSet> split = splitDataSet(dd, .8);
-        DataSet training = split.get(0);
-        DataSet test = split.get(1);
 
         DataNormalization normalization = new NormalizerMinMaxScaler();
         normalization.fitLabel(true);
-        normalization.fit(training);
-        normalization.preProcess(training);
-        //iter.reset();
-        //iter.setPreProcessor(normalization);
+        normalization.fit(trainIter);
+        trainIter.reset();
+
+        trainIter.setPreProcessor(normalization);
+        testIter.setPreProcessor(normalization);
 
 
-
-        MultiLayerNetwork network = getStockNetwork(iter.inputColumns(), 32, false, "simple");
-
-
-        for (int i = 0; i < 100; i++) {
-
-            network.fit(training);
-        }
-
-        //network.fit(iter, 200);
+        MultiLayerNetwork network = getStockNetwork(trainIter.inputColumns(), 32, false, "simple");
 
 
-        //DataSetIterator newIter = FormattedDataRequester.simpleSequenceIterator("mmm", 1, true);
+        //get earlystoppingtrainer
+        EarlyStoppingConfiguration esConf = new EarlyStoppingConfiguration.Builder()
+                //.epochTerminationConditions(new MaxEpochsTerminationCondition(1))
+                .epochTerminationConditions(new ScoreImprovementEpochTerminationCondition(10))
+                .iterationTerminationConditions(new MaxTimeIterationTerminationCondition(120, TimeUnit.MINUTES))
+                .scoreCalculator( new RegressionScoreCalculator(RegressionEvaluation.Metric.MSE, testIter))
+                .evaluateEveryNEpochs(1)
+                .modelSaver(new LocalFileModelSaver(path ))
+                .build();
 
-        // newIter.setPreProcessor(normalization);
-        normalization.preProcess(test);
+
+        EarlyStoppingTrainer trainer = new EarlyStoppingTrainer(esConf, network, trainIter);
+
+        EarlyStoppingResult result = trainer.fit();
+
+        //result.setBestModel(null);
+        //FileManager.serialize(savedirectory  + "\\" + Constants.RESULT_SUFFIX, result);
+
+        //Print out the results:
+        System.out.println("Termination reason: " + result.getTerminationReason());
+        System.out.println("Termination details: " + result.getTerminationDetails());
+        System.out.println("Total epochs: " + result.getTotalEpochs());
+        System.out.println("Best epoch number: " + result.getBestModelEpoch());
+        System.out.println("Score at best epoch: " + result.getBestModelScore());
+
+
 
         network.rnnClearPreviousState();
 
         INDArray out = Nd4j.zeros(1);
         ArrayList<INDArray> output = new ArrayList<>();
 
+        testIter.reset();
+        while (testIter.hasNext()) {
+            out = network.output(testIter.next().getFeatures());
+            output.add(out);
+        }
 
-        out = network.output(test.getFeatures());
-        output.add(out);
+
 
 
         normalization.revertLabels(out);
 
         ArrayList<DataSet> toChart = new ArrayList<>();
-        DataSet result = new DataSet();
-        result.setFeatures(out);
-        toChart.add(result);
+        DataSet results = new DataSet();
+        results.setFeatures(out);
+        toChart.add(results);
         toChart.add(readCSVDataSet(path + "simple_mmm.csv", 1500, -1));
 
-        plotFitCompare(toChart.get(1), toChart.get(0), (int) training.getLabels().length(), "simplesingle");
+
+
+        plotFitCompare(toChart.get(1), toChart.get(0), trainLength , "simplesingle");
     }
 
 
@@ -205,39 +209,15 @@ public class LSTMCSV {
     }
 
 
-    // Turn a single file into a sequence iterator (Used for training)
-    public static DataSetIterator sequenceIterator(combination combination, String feat, String label, int batch) throws Exception
+    //List of files int a sequence iterator
+    public static DataSetIterator sequenceIterator(String feat, String label, int batch) throws Exception
     {
         String featureToPath = "" ;
         String labelToPath = "";
 
-        switch (combination){
 
-            case simple:
-                featureToPath = path + feat + ".csv";
-                labelToPath = path + label + ".csv";
-                break;
-            /*
-            case combo:
-                featureToPath = Constants.comboSeqFeatPath + tick + ".csv";
-                labelToPath = Constants.comboSseqFlabelPath + tick + ".csv";
-                break;
-
-            case tech:
-                featureToPath = Constants.techSeqFeatPath + tick + ".csv";
-                labelToPath = Constants.techSeqLabelPath + tick + ".csv";
-
-                break;
-
-            case full:
-                featureToPath = Constants.fullSeqFeatPath + tick + ".csv";
-                labelToPath = Constants.fullSeqLabelPath + tick + ".csv";
-                break;
-
-             */
-
-        }
-
+                featureToPath = path + feat;
+                labelToPath = path + label;
 
 
 

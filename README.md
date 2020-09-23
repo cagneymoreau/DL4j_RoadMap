@@ -21,6 +21,7 @@ https://github.com/eclipse/deeplearning4j-examples
 done
 
 ### basic stat exercises
+thought these would be cool
 
 ### Feed Forward Linear Regression and minibatch
 done
@@ -38,29 +39,31 @@ done
 done with bug
 
 ### Dual LSTM and csv manipulation
- simple stock trader
+ done two contrived examples of
+        simple stock trader design
 
-### OverFitting and BenchMarking against examples
-
-### Early Stopping
+### OverFitting/EarlyStopping & nontrivial split dataset
+done stock example extended
 
 ### Convolutions Cifar
 not included I used the dl4j example repo
 
 ### autoencoder/unsupervised
-
+done stocks example
 
 ### convolution autoencoder
-done
+done celeb a dataset
 
 ### GrowAble Gan and weight sharing and comp graph debug
 Ony makes modern art at the moment
 
 
-### Reinforcement learning, custom loss  functions
+### Reinforcement learning, custom loss  functions, BenchMarking against examples
 separate git
 https://github.com/cagneymoreau/ReinforcmentLearning
 
+
 ### NLP and transfering models
 
-###attention transformers
+
+### attention transformers

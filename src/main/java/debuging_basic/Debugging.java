@@ -34,6 +34,8 @@ import java.util.*;
  * See below for multilayer network debugging strategies
  * For computational graph see growablegan/gangrow
  *
+ * Another important tool in debugging is to always attempt to overfit
+ * single datapoint. If you cant overfit there is a bug
  *
  */
 
