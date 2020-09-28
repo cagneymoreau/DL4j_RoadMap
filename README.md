@@ -1,14 +1,15 @@
 #Machine Learning RoadMap for DL4J
 
 This is a collection of progressively harder projects that I learned on and you can review or fix. Some are missing flawed etc
-When I set out to learn I didnt plan on writing this so its a very ugly collections. The only advantage It has
-over other learning sources is the chronological progression and my snappy comments!
+When I set out to learn I didnt plan on writing this so its a very ugly collections.
+Its sequential in nature so it should be a good roadmap for someone else.
 
 
 If you want to add something to this please don't hesitate to let me know.
-Some of the more interesting things don't work so If you see an error let me know.
+Im trying to touch on each broad category of machine learning.
 
-Also let me know if you want to team up on a harder project
+Some of the more interesting things don't work or are a work in progress.
+Also let me know if you want to team up on a harder project or find bugs here.
 
 
 ### BigPicture.txt
@@ -51,6 +52,10 @@ not included I used the dl4j example repo
 ### autoencoder/unsupervised
 done stocks example
 
+### vae
+
+### network/hper params testing/tuning
+
 ### convolution autoencoder
 done celeb a dataset
 
@@ -63,7 +68,10 @@ separate git
 https://github.com/cagneymoreau/ReinforcmentLearning
 
 
-### NLP and transfering models
+### NLP
+
+
+### transfering models
 
 
 ### attention transformers
