@@ -60,7 +60,9 @@ done stocks example
 done celeb a dataset
 
 ### GrowAble Gan and weight sharing and comp graph debug
-Ony makes modern art at the moment
+super important idea because it shows how networks can start learning
+simple things and advance to more complicated without direct intervention
+-- Ony makes modern art at the moment
 
 
 ### Reinforcement learning, custom loss  functions, BenchMarking against examples
@@ -68,10 +70,45 @@ separate git
 https://github.com/cagneymoreau/ReinforcmentLearning
 
 
-### NLP
+### Convolution Layer Viewers
+Use the two different style of networks and view
+the activations maps or the filters maximizations
+
+
+### image segmentation
+Use the Oxford-IIIT Pets dataset to perform segmentation and classification
+opening tar.gz too
+U-Net
+
+
+
+### word object embedding
+
+
+### Attention, Transformer, pervasive attention and NLP
+vectorization and basic concept of dimensional tunneling vs static structure
+https://www.youtube.com/watch?v=XrZ_Y4koV5A
+ https://github.com/treo/dl4j_attention
+
+
+### sparse training rigl
+
+
+### Simplification/ Quantization
+prado pqrnn realm
+quantization fp to int
 
 
 ### transfering models
 
 
-### attention transformers
+
+### object detection ILR/ efficientdet/ affordance
+
+
+### pointcloud keypoint
+
+
+
+
+

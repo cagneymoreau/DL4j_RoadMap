@@ -1,7 +1,5 @@
-package convolution_autoencoder;
+package KernelViewer;
 
-import KernelViewer.CovOutViewer;
-import KernelViewer.KernelView;
 import nu.pattern.OpenCV;
 import org.datavec.api.split.FileSplit;
 import org.datavec.image.loader.Java2DNativeImageLoader;
@@ -34,13 +32,11 @@ import java.io.File;
 import java.util.List;
 
 /**
- * convolutional auto encoder
- * you must add a dataset
- * I used  http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html
+ * This is a simple multinet convo encoder from existing project
  *
  */
 
-public class NewExp {
+public class ConvSimple {
 
     private static JFrame frame;
     private static JLabel label;
@@ -50,7 +46,7 @@ public class NewExp {
     Java2DNativeImageLoader imageLoader;
     Java2DNativeImageLoader imageLoaderTwo;
 
-    private static final Logger log = LoggerFactory.getLogger(NewExp.class);
+    private static final Logger log = LoggerFactory.getLogger(ConvSimple.class);
     int height = 32;
     int width = 32;
 
@@ -61,12 +57,12 @@ public class NewExp {
 
     public static void main(String[] args)
     {
-        NewExp newExp = new NewExp();
+        ConvSimple newExp = new ConvSimple();
         newExp.run();
     }
 
 
-    public NewExp() {
+    public ConvSimple() {
 
         if (incorrect.equals(source)){
             System.err.println("You must set the source to your dataset");
@@ -110,7 +106,8 @@ public class NewExp {
 
         MultiLayerNetwork net = getNet();
 
-
+        //KernelView  kernelView = new KernelView(net);
+        CovOutViewer covOutViewer = new CovOutViewer(net);
 
 
         for (int i = 0; i < 100; i++) {
@@ -132,6 +129,10 @@ public class NewExp {
                     BufferedImage bf = imageLoader.asBufferedImage(d.getFeatures());
 
                     List<INDArray> a = net.feedForwardToLayer(10, d.getFeatures());
+
+                    Gradient grr = net.gradient();
+
+                    covOutViewer.update();
 
                     BufferedImage bfO = imageLoaderTwo.asBufferedImage(a.get(a.size() - 1));
 

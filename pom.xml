@@ -119,6 +119,11 @@
 
         <!-- This causes UIServer to throw nosuchmethod exception -->
         <!-- -->
+        <dependency>
+            <groupId>us.hebi.matlab.mat</groupId>
+            <artifactId>mfl-core</artifactId>
+            <version>0.5.6</version>
+        </dependency>
 
         <dependency>
             <groupId>org.datavec</groupId>

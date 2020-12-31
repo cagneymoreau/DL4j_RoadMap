@@ -1,7 +1,6 @@
-package convolution_autoencoder;
+package vae;
 
-import KernelViewer.CovOutViewer;
-import KernelViewer.KernelView;
+import convolution_autoencoder.NewExp;
 import nu.pattern.OpenCV;
 import org.datavec.api.split.FileSplit;
 import org.datavec.image.loader.Java2DNativeImageLoader;
@@ -12,7 +11,6 @@ import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.layers.*;
 import org.deeplearning4j.nn.conf.preprocessor.CnnToFeedForwardPreProcessor;
 import org.deeplearning4j.nn.conf.preprocessor.FeedForwardToCnnPreProcessor;
-import org.deeplearning4j.nn.gradient.Gradient;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
@@ -33,19 +31,16 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.List;
 
-/**
- * convolutional auto encoder
- * you must add a dataset
- * I used  http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html
- *
- */
 
-public class NewExp {
+
+
+public class VaeBench {
+
 
     private static JFrame frame;
     private static JLabel label;
 
-      JLabel originalLaabel;
+    JLabel originalLaabel;
     JLabel resultLabel;
     Java2DNativeImageLoader imageLoader;
     Java2DNativeImageLoader imageLoaderTwo;
@@ -61,12 +56,15 @@ public class NewExp {
 
     public static void main(String[] args)
     {
-        NewExp newExp = new NewExp();
-        newExp.run();
+        VaeBench vaeBench = new VaeBench();
+
+        vaeBench.run();
+
     }
 
 
-    public NewExp() {
+
+    public VaeBench() {
 
         if (incorrect.equals(source)){
             System.err.println("You must set the source to your dataset");
@@ -92,13 +90,12 @@ public class NewExp {
         resultLabel = new JLabel();
         resultLabel.setBounds(width * 2,0, width * 2, height * 2);
 
-       frame.add(originalLaabel);
-       frame.add(resultLabel);
-       frame.setSize(width * 5, height * 4 );
-       frame.setEnabled(true);
-       frame.setLayout(null);
-       frame.setVisible(true);
-
+        frame.add(originalLaabel);
+        frame.add(resultLabel);
+        frame.setSize(width * 5, height * 4 );
+        frame.setEnabled(true);
+        frame.setLayout(null);
+        frame.setVisible(true);
 
 
     }
@@ -120,14 +117,15 @@ public class NewExp {
 
                 DataSet d = iter.next();
 
+                net.fit(d.getFeatures(), d.getFeatures());
 
-                INDArray ind = net.getGradientsViewArray();
-                Gradient g = net.gradient();
+                //INDArray ind = net.getGradientsViewArray();
+                //Gradient g = net.gradient();
 
-                //net.backpropGradient();
+                //net.backpropGradient()
+
 
                 if ((count % 100) == 0) {
-
 
                     BufferedImage bf = imageLoader.asBufferedImage(d.getFeatures());
 
@@ -141,9 +139,6 @@ public class NewExp {
                     //System.out.println("");
 
                 }
-
-                net.fit(d.getFeatures(), d.getFeatures());
-
                 count++;
             }
 
@@ -181,7 +176,7 @@ public class NewExp {
     private MultiLayerNetwork getNet()
     {
         int rngSeed = 123;
-        int dimensions = 256;
+        int dimensions = 2;
 
         //Neural net configuration
         Nd4j.getRandom().setSeed(rngSeed);
@@ -243,6 +238,9 @@ public class NewExp {
         return net;
 
     }
+
+
+
 
 
 
